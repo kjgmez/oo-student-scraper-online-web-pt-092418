@@ -18,21 +18,32 @@ class Scraper
     end
     arr
     #binding.pry
+
+    student_cards = site.css('div.roster-cards-container div.student-card')
+    #binding.pry
+    student_card.each do |info|
+      stu = {}
+      stu[:name] = info.css('a div.card-text-container h4')
+      stu[:location] = info.css('a div.card-text-container p').text
+      stu[:profile_url] = info.css('a').attribute('href').text
+      arr << stu
+    end
+    arr
   end
 
   def self.scrape_profile_page(profile_url)
     site = Nokogiri::HTML(open(profile_url))
     info = site.css('div.vitals-container')
-    social = info.css('div.social-icon-container a').attribute('href').value
-    binding.pry
-    info.each do |item|
-      stud = {}
-      stud[:twitter] = item.css('q')
-      stud[:linkedin] = item.css()
-      stud[:github] = item.css()
-      stud[:blog] = item.css()
-      stud[:profile_quote] = item.css()
-      stud[:bio] = item.css()
-    end
+    quote = site.css('div.details-container')
+    social = info.css('div.social-icon-container a')
+    stud = {}
+    links = []
+    keys = ['twiter', 'linkedin', 'github', 'blog']
+    social.collect{|link| links << link.attribute('href').value}
+    keys.zip(links) { |key,val| stud[key.to_sym] = val}
+    #binding.pry
+    stud[:profile_quote] = info.css('div.vitals-text-container div.profile-quote').text
+    stud[:bio] = quote.css('div.details-container div.bio-block div.bio-content div.description-holder').text
+    #binding.pry
   end
 end
