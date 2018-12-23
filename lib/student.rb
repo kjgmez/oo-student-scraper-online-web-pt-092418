@@ -11,6 +11,7 @@ class Student
 
   def self.create_from_collection(students_array)
     students_array.each{|student_hash| Student.new(student_hash)}
+    #binding.pry
   end
 
   def add_student_attributes(attributes_hash)
@@ -20,6 +21,7 @@ class Student
     self.send("blog=", attributes_hash[:blog])
     self.send("profile_quote=", attributes_hash[:profile_quote])
     self.send("bio=", attributes_hash[:bio])
+    #binding.pry
   end
 
   def self.all
