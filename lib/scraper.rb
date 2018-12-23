@@ -18,7 +18,6 @@ class Scraper
     end
     arr
     #binding.pry
-
     student_cards = site.css('div.roster-cards-container div.student-card')
     #binding.pry
     student_card.each do |info|
@@ -37,13 +36,22 @@ class Scraper
     quote = site.css('div.details-container')
     social = info.css('div.social-icon-container a')
     stud = {}
-    links = []
-    keys = ['twiter', 'linkedin', 'github', 'blog']
-    social.collect{|link| links << link.attribute('href').value}
-    keys.zip(links) { |key,val| stud[key.to_sym] = val}
+    links = social.collect{|link| link.attribute('href').value}
+    links.each do |link|
+      if link.include?("twitter")
+        stud[:twitter] = link
+      elsif link.include?("linkedin")
+        stud[:linkedin] = link
+      elsif link.include?("github")
+        stud[:github] = link
+      elsif link.include?(".com")
+        stud[:blog] = link
+      end
+    end
     #binding.pry
     stud[:profile_quote] = info.css('div.vitals-text-container div.profile-quote').text
-    stud[:bio] = quote.css('div.details-container div.bio-block div.bio-content div.description-holder').text
+    stud[:bio] = quote.css('div.details-container div.bio-block div.bio-content div.description-holder').text.strip
     #binding.pry
+    stud
   end
 end
